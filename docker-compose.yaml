@@ -1,0 +1,98 @@
+version: '3'
+
+services:
+
+  producer1:
+    container_name: producer1
+    build:
+      context: ./producer
+      # no_cache: true
+    # depends_on:
+    #   - consumer1
+    #   - consumer2
+    environment:
+      - ProdNum=1
+    env_file:
+      - ./MSize.env
+    networks:
+      - lab2network
+
+  producer2:
+    container_name: producer2
+    build:
+      context: ./producer
+      # no_cache: true
+    # depends_on:
+    #   - consumer1
+    #   - consumer2
+    environment:
+      - ProdNum=2
+    env_file:
+      - ./MSize.env
+    networks:
+      - lab2network
+
+  agregator:
+    container_name: agregator
+    build:
+      context: ./agregator
+      # no_cache: true
+    volumes:
+      - ./file_input.txt:/app/file_input.txt
+    ports:
+      - "81:81"
+    # depends_on:
+    #   - consumer1
+    #   - consumer2
+    networks:
+      - lab2network
+
+  
+
+  # nginx:
+  #   image: nginx
+  #   container_name: nginx
+  #   volumes:
+  #     - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+  #   ports:
+  #     - "80:80"
+  #   depends_on:
+  #     - consumer1
+  #     - consumer2
+  #     - producer1
+  #     - producer2
+  #   networks:
+  #     - lab2network
+
+  # consumer1:
+  #   container_name: consumer1
+  #   build:
+  #     context: ./consumer1
+  #     # no_cache: true
+  #   ports:
+  #     - "8081:8080"
+  #   networks:
+  #     - lab2network
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '8.0'
+
+  # consumer2:
+  #   container_name: consumer2
+  #   build:
+  #     context: ./consumer2
+  #     no_cache: true
+  #   ports:
+  #     - "8082:8080"
+  #   networks:
+  #     - lab2network
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '8.0'
+
+networks:
+  lab2network:
+    name: lab2network
+    driver: bridge
